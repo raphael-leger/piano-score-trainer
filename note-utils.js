@@ -13,16 +13,29 @@ function hzToNote(freq) {
 	return Math.round(note) + 49;
 }
 
-function noteString(note) {
-	const notes = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"];
-	const notesEuropean = ["LA", "LA#", "SI", "DO", "DO#", "RE", "RE#", "MI", "FA", "FA#", "SOL", "SOL#"];
-	const letter = notes[(note + 11) % notes.length];
-	const letterEuropean = notesEuropean[(note + 11) % notesEuropean.length];
-	const octave = Math.floor((note - 49) / notes.length) + 4;
+const notes = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"];
+const notesEuropean = ["LA", "LA#", "SI", "DO", "DO#", "RE", "RE#", "MI", "FA", "FA#", "SOL", "SOL#"];
 
+function randomNote() {
+	const randomLetterIndex = Math.floor(Math.random() * notes.length);
+	const letter = notes[randomLetterIndex];
+	const letterEuropean = notesEuropean[randomLetterIndex];
+	const octave = Math.floor(Math.random() * (6 - 4) + 4);
 	const name = letterEuropean + octave;
 	const sharp = letter.length > 1 ? true : false;
+	const abcjs = toAbcJs(letter, octave, sharp);
 
+	return {
+		name,
+		letter,
+		letterEuropean,
+		octave,
+		sharp,
+		abcjs
+	}
+}
+
+function toAbcJs(letter, octave, sharp) {
 	let abcjs = '';
 	let abcjsLetter = letter;
 	let abcjsOctave = octave;
@@ -49,11 +62,24 @@ function noteString(note) {
 	}
 	abcjs = `${abcjsLetter}2`;
 
+	return abcjs;
+}
+
+function noteString(note) {
+	const letter = notes[(note + 11) % notes.length];
+	const letterEuropean = notesEuropean[(note + 11) % notesEuropean.length];
+	const octave = Math.floor((note - 49) / notes.length) + 4;
+
+	const name = letterEuropean + octave;
+	const sharp = letter.length > 1 ? true : false;
+	const abcjs = toAbcJs(letter, octave, sharp);
+
 	return {
 		name,
 		letter,
 		letterEuropean,
 		octave,
+		sharp,
 		abcjs
 	};
 }

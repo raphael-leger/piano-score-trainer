@@ -138,6 +138,15 @@
 		overflow-y: scroll;
 	}
 
+	#scoreToGuess {
+		color: white;
+		transition: color .15s linear;
+	}
+
+	#scoreToGuess.blinky {
+		color: limegreen;
+	}
+
 </style>
 </head>
 <body>
@@ -161,6 +170,7 @@
 	</div>
 
 	<div id="result">
+		<div id="scoreToGuess"></div>
 		<div id="scoreResult"></div>
 		<div id="textResult"></div>
 	</div>
@@ -181,6 +191,8 @@
 	<script type="text/javascript">
 		
 		'use strict';
+
+		let noteToGuess = {};
 
 		var conf =
 		{
@@ -264,8 +276,18 @@
 			const noteObject = (note && note.stable) ? hzToNoteObject(note.freq) : {};
 
 			if (noteObject.name) {
-				$('#textResult').html(noteObject.name);
-				renderScoreResult(noteObject);
+				//$('#textResult').html(noteObject.name);
+				//renderScoreResult(noteObject);
+				
+				console.log('noteToGuess noteObject', noteToGuess, noteObject)
+
+				if (noteToGuess.abcjs === noteObject.abcjs) {
+					noteToGuess = renderScoreToGuess();
+					document.getElementById("scoreToGuess").className = "blinky";
+					setTimeout(() => {
+						document.getElementById("scoreToGuess").className = "";
+					}, 300)
+				}
 			}
 		}
 
@@ -379,8 +401,13 @@
 			log('Ok');
 		}
 
+		$("#scoreToGuess").click(function () {
+			noteToGuess = renderScoreToGuess();
+		})
+
 		//
 		$('#go').click(function(){
+			noteToGuess = renderScoreToGuess();
 
 			if (stream) stop();
 			else        start();
