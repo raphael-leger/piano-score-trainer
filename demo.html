@@ -115,12 +115,13 @@
 		width: 800px;
 		margin: 10px auto 20px;
 		padding: 10px 20px;
-		height: 24px;
 		font-size: 24px;
 		font-family: monospace;
 	}
 
 	#trace {
+		display: none;
+		
 		background: #0004;
 		color: #fffa;
 
@@ -140,11 +141,9 @@
 </style>
 </head>
 <body>
-	<div id=go>Go</div>
+	<div id="go">Start</div>
 
-	<div id=show-options><a href=#>Options</a></div>
-
-	<div id=options>
+	<div id="options">
 		<div id=win-size class=opts>
 			<div id=x0k>512</div>
 			<div id=x1k>1024</div>
@@ -161,18 +160,24 @@
 		</div>
 	</div>
 
-	<div id=graph>
+	<div id="result">
+		<div id="scoreResult"></div>
+		<div id="textResult"></div>
+	</div>
+
+	<div id="graph">
 		<span></span>
 		<canvas width="800" height="128"></canvas>
 	</div>
 
-	<div id=result>Click Go and play a note</div>
-
-	<div id=trace></div>
+	<div id="trace"></div>
 
 	<script type="text/javascript" src="https://code.jquery.com/jquery-1.8.3.min.js"></script>
 	<script type="text/javascript" src="note-detector.js"></script>
 	<script type="text/javascript" src="note-utils.js"></script>
+	<script type="text/javascript" src="node_modules/abcjs/dist/abcjs-basic-min.js"></script>
+	<script type="text/javascript" src="note-visualiser.js"></script>
+	
 	<script type="text/javascript">
 		
 		'use strict';
@@ -199,6 +204,7 @@
 		//
 		function log(text)
 		{
+			return; // no logs
 			var trace = document.getElementById('trace');
 			trace.innerHTML = text ? trace.innerHTML + text + '<br>' : '';
 			trace.scrollTop = trace.scrollHeight;
@@ -255,9 +261,12 @@
 			plot(detector.buf, '#08f', true, -1, +1);
 			
 			note = detector.getNote();
-			desc = (note && note.stable) ? hzToNoteString(note.freq) : '';
+			const noteObject = (note && note.stable) ? hzToNoteObject(note.freq) : {};
 
-			$('#result').html(desc);
+			if (noteObject.name) {
+				$('#textResult').html(noteObject.name);
+				renderScoreResult(noteObject);
+			}
 		}
 
 		//
@@ -267,14 +276,6 @@
 			
 			conf.windowSize = sizeMap[ $('#win-size .active').attr('id') ];
 			conf.windowType = $('#win-type .active').attr('id');
-		}
-
-		function updateGraphTitle()
-		{
-			var $info = $('#graph span');
-			var title = (analyzer ? analyzer.fftSize : conf.windowSize) + ' / ' + conf.windowType;
-			if ($info.html() != title)
-				$info.html(title);
 		}
 
 		//
@@ -373,7 +374,7 @@
 
 			if (context) context = null;
 
-			$("#go").html("Go").removeClass('active')
+			$("#go").html("Start").removeClass('active')
 
 			log('Ok');
 		}
@@ -404,7 +405,6 @@
 			$this.addClass('active');
 
 			updateConfig();
-			updateGraphTitle();
 
 			if (analyzer)
 				initAnalyzer();
@@ -428,7 +428,6 @@
 			render = canvas.getContext("2d");
 
 			updateConfig();
-			updateGraphTitle();
 		
 		});
 	</script>

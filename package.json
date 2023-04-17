@@ -1,0 +1,22 @@
+{
+  "name": "piano-score-trainer",
+  "version": "1.0.0",
+  "description": "Quick and fairly simple code for real-time detection of single piano notes  in audio signal.",
+  "main": "note-detector.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/raphael-leger/piano-score-trainer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/raphael-leger/piano-score-trainer/issues"
+  },
+  "homepage": "https://github.com/raphael-leger/piano-score-trainer#readme",
+  "devDependencies": {
+    "abcjs": "^6.2.1"
+  }
+}
